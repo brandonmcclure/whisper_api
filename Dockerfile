@@ -8,7 +8,7 @@ WORKDIR /code
 COPY ./requirements.txt .
 
 RUN pip install --upgrade pip --no-cache-dir && \
-	pip install -r requirements.txt --no-warn-script-location --no-cache-dir
+	pip install -r requirements.txt --no-warn-script-location --no-cache-dir --compile
 
 WORKDIR /code
 
