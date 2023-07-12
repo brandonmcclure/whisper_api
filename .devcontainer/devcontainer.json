@@ -1,0 +1,15 @@
+{
+  "name": "Ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/base:jammy",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {},
+    "ghcr.io/dhoeric/features/act:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  "remoteUser": "root"
+}
+	
+

@@ -1,0 +1,9 @@
+asyncio
+websockets
+argparse
+speechrecognition
+gradio
+numpy
+soundfile
+torch
+openai-whisper
