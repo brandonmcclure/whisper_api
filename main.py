@@ -3,9 +3,11 @@ import argparse
 import speech_recognition as sr
 import numpy as np
 import io
+import pydub
+import subprocess
 import soundfile as sf
 import logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s || %(levelname)s || %(name)s.%(funcName)s:%(lineno)d || %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s || %(levelname)s || %(name)s.%(funcName)s:%(lineno)d || %(message)s')
 
 parser = argparse.ArgumentParser(description='Basic Whisper API server')
 parser.add_argument(
@@ -16,10 +18,44 @@ args = parser.parse_args()
 
 r = sr.Recognizer()
 
+def downloadYT(url):
+    logging.info(f'downloading audio from {url}')
+    command = f"yt-dlp -f m4a --write-subs --write-auto-subs -o '/tmp/ytdl' '{url}'"
+    result = subprocess.check_output(["/bin/bash", "-c", command]).decode("utf-8").strip().split()
+    return performSTT(read('/tmp/ytdl'))
+
+def read(f, normalized=False):
+
+    """audio file to numpy array"""
+    a = pydub.AudioSegment.from_file(f)
+    y = np.array(a.get_array_of_samples())
+    if a.channels == 2:
+        y = y.reshape((-1, 2))
+    if normalized:
+        return a.frame_rate, np.float32(y) / 2**15
+    else:
+        return a.frame_rate, y
+def DecideOnTypeOfInput(audioupload = None,microphone = None,url = None):
+    if audioupload != None:
+        logging.info('doing audio upload')
+        logging.debug(audioupload)
+        return performSTT(audioupload)
+    if microphone != None:
+        logging.info('doing microphone upload')
+        logging.debug(microphone)
+        return performSTT(microphone)
+    if url != None:
+        logging.info('doing url upload')
+        return downloadYT(url)            
+    raise "Must pass either an audio upload, your microphone, or a url"
+            
+    
 def performSTT(audio):
-     logging.info(audio[1])
+     logging.debug(f'audio: {audio[1]}')
      audio_bytes = audio[1].tobytes()
-     audio_array = np.frombuffer(audio_bytes, dtype=np.int16)
+     expectedDTYpe = audio[1].dtype
+     logging.info(f'expected dtype: {expectedDTYpe}')
+     audio_array = np.frombuffer(audio_bytes, dtype=expectedDTYpe)
      with io.BytesIO() as wav_io:
          with sf.SoundFile(wav_io, mode='w', format='wav', samplerate=audio[0], channels=1) as file:
              file.write(audio_array)
@@ -32,10 +68,18 @@ with gr.Blocks(analytics_enabled=False) as grBlock:
         """
         # Local Whisper STT
 
-        Upload a .mp3 or .wav file and press the button to convert it to text.
+        Can convert English speech to text. Choose to upload a mp3 or other media file, record your microphone, or select a url (still experimental) to download and transcribe.
+
+        Use the tabs at the top to select one way to input the audio, then click the **Convert Speech to text** button below.
         """)
-    audio_object = gr.Audio(label="Speech")
+    with gr.Tab("Upload a file"):
+        audio_object = gr.Audio(label="Upload a file")
+    with gr.Tab("Use your microphone"):
+        mic_object = gr.Microphone(label="use your mic", type='numpy')
+    with gr.Tab("Download from url"):
+        url = gr.Textbox(label="url")
     output_text = gr.Textbox(label="Text")
     btn = gr.Button("Convert Speech to text")
-    btn.click(fn=performSTT, inputs=[audio_object], outputs=[output_text])
-grBlock.launch(server_name = '0.0.0.0', server_port = 7861)   
+    btn.click(fn=DecideOnTypeOfInput, inputs=[audio_object,mic_object], outputs=[output_text])
+
+grBlock.launch(server_name = '0.0.0.0', server_port = 7862)   

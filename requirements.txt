@@ -5,3 +5,5 @@ numpy
 soundfile
 torch
 openai-whisper
+yt-dlp
+pydub
