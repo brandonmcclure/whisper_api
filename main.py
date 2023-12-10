@@ -3,13 +3,14 @@ import argparse
 import speech_recognition as sr
 import numpy as np
 import io
+import os
 import soundfile as sf
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s || %(levelname)s || %(name)s.%(funcName)s:%(lineno)d || %(message)s')
 
 parser = argparse.ArgumentParser(description='Basic Whisper API server')
 parser.add_argument(
-    '-m', '--model', default='small.en',
+    '-m', '--model', default=os.environ.get('WHISPER_SERVICE_MODEL','small.en'),
     help='The open AI whisper model to use to detect speech')
 
 args = parser.parse_args()
