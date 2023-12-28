@@ -3,5 +3,4 @@ speechrecognition==3.10.0
 gradio==3.50.2
 numpy
 soundfile
-torch
 openai-whisper==20231106
