@@ -5,6 +5,8 @@ import numpy as np
 import io
 import os
 import soundfile as sf
+import sys
+import torch
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s || %(levelname)s || %(name)s.%(funcName)s:%(lineno)d || %(message)s')
 
@@ -12,9 +14,14 @@ parser = argparse.ArgumentParser(description='Basic Whisper API server')
 parser.add_argument(
     '-m', '--model', default=os.environ.get('WHISPER_SERVICE_MODEL','small.en'),
     help='The open AI whisper model to use to detect speech')
-
+parser.add_argument(
+    '--cpu', action="store_true",
+    help='If true, this will allow the program to run on a CPU instead of your GPU using CUDA')
 args = parser.parse_args()
 
+if(not args.cpu and not torch.cuda.is_available()):
+    logging.info('No cuda, bye')
+    sys.exit()
 r = sr.Recognizer()
 
 def performSTT(audio):
@@ -39,4 +46,5 @@ with gr.Blocks(analytics_enabled=False) as grBlock:
     output_text = gr.Textbox(label="Text")
     btn = gr.Button("Convert Speech to text")
     btn.click(fn=performSTT, inputs=[audio_object], outputs=[output_text])
+grBlock.queue(max_size=10)
 grBlock.launch(server_name = '0.0.0.0', server_port = 7861)   
