@@ -60,7 +60,7 @@ jobs:
             ghcr.io/brandonmcclure/whisper_service/${{ env.IMAGE_NAME }}
             bmcclure89/${{ env.JUST_IMAGE_NAME }}
       - name: Build Docker image (non main branch)
-        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
         if: github.ref != 'refs/heads/main'
         with:
           context: .
@@ -71,7 +71,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }} 
       - name: Build and push Docker image (main branch)
-        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
         if: github.ref == 'refs/heads/main'
         with:
           context: .
