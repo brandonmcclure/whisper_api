@@ -1,34 +1,28 @@
-ifeq ($(OS),Windows_NT)
-	SHELL := pwsh.exe
-else
-	SHELL := pwsh
-endif
-
-.SHELLFLAGS := -NoProfile -Command
-
-getcommitid: 
-	$(eval COMMITID = $(shell git log -1 --pretty=format:"%H"))
-getbranchname:
-	$(eval BRANCH_NAME = $(shell (git branch --show-current ) -replace '/','.'))
-
-
 .PHONY: all clean test lint
-all: test
+all: build
 
-REGISTRY_NAME := 
+REGISTRY_NAME :=
 REPOSITORY_NAME := bmcclure89/
 IMAGE_NAME := whisper_service
 TAG := :latest
 
 # Run Options
 RUN_PORTS := -p 7861:7861
+
+getcommitid: 
+	$(eval COMMITID = $(shell git log -1 --pretty=format:"%H"))
+getbranchname:
+	$(eval BRANCH_NAME = $(shell echo "$$(git branch --show-current)" | sed 's/\//./g'))
+get_file_safe_image_name:
+	$(eval IMAGE_TAR_FILE_NAME = $(shell echo "$(IMAGE_NAME)" | sed 's/\//./g').tar)
+
 build: getcommitid getbranchname
 	docker build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(BRANCH_NAME) -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(BRANCH_NAME)_$(COMMITID) .
 
 run: build
-	docker run --gpus=all -it $(RUN_PORTS) $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
-package:
-	$$PackageFileName = "$$("$(IMAGE_NAME)" -replace "/","_").tar"; docker save $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) -o $$PackageFileName
+	docker run --gpus=all -it $(RUN_PORTS) -v whisper_cache:/root/.cache/whisper $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
+package: get_file_safe_image_name
+	docker save $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) -o $(IMAGE_TAR_FILE_NAME)
 
 size:
 	docker inspect -f "{{ .Size }}" $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
