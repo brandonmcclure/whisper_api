@@ -9,13 +9,17 @@ on:
     branches:
       - main
     paths:
-      - ./
+      - ./main.py
+      - ./Dockerfile
+      - ./requirements.txt
       - .github/workflows/buildDockerImage.yml
   pull_request:
     branches:
       - main
     paths:
-      - ./
+      - ./main.py
+      - ./Dockerfile
+      - ./requirements.txt
       - .github/workflows/buildDockerImage.yml
 
 env:
@@ -33,6 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Log in to the Github Container registry
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
