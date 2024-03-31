@@ -9,17 +9,19 @@ on:
     branches:
       - main
     paths:
-      - ./main.py
-      - ./Dockerfile
-      - ./requirements.txt
+      - whisper_service/*
+      - tests/*
+      - Dockerfile
+      - requirements.txt
       - .github/workflows/buildDockerImage.yml
   pull_request:
     branches:
       - main
     paths:
-      - ./main.py
-      - ./Dockerfile
-      - ./requirements.txt
+      - whisper_service/*
+      - tests/*
+      - Dockerfile
+      - requirements.txt
       - .github/workflows/buildDockerImage.yml
 
 env:
