@@ -9,13 +9,19 @@ on:
     branches:
       - main
     paths:
-      - ./
+      - whisper_service/*
+      - tests/*
+      - Dockerfile
+      - requirements.txt
       - .github/workflows/buildDockerImage.yml
   pull_request:
     branches:
       - main
     paths:
-      - ./
+      - whisper_service/*
+      - tests/*
+      - Dockerfile
+      - requirements.txt
       - .github/workflows/buildDockerImage.yml
 
 env:
@@ -33,16 +39,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Log in to the Github Container registry
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
         with:
           registry: ghcr.io
 
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Login to DockerHub
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
         with:
           username: bmcclure89
 
@@ -60,7 +68,7 @@ jobs:
             ghcr.io/brandonmcclure/whisper_service/${{ env.IMAGE_NAME }}
             bmcclure89/${{ env.JUST_IMAGE_NAME }}
       - name: Build Docker image (non main branch)
-        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
         if: github.ref != 'refs/heads/main'
         with:
           context: .
@@ -71,7 +79,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }} 
       - name: Build and push Docker image (main branch)
-        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
         if: github.ref == 'refs/heads/main'
         with:
           context: .
