@@ -42,3 +42,4 @@ RUN pip install --upgrade pip --no-cache-dir \
 RUN pytest
 
 CMD ["python3", "/code/whisper_service/__init__.py"]
+VOLUME /root/.cache/whisper
