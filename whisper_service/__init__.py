@@ -7,6 +7,7 @@ import os
 import soundfile as sf
 import sys
 import torch
+import mymod
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s || %(levelname)s || %(name)s.%(funcName)s:%(lineno)d || %(message)s')
 
@@ -22,19 +23,7 @@ args = parser.parse_args()
 if(not args.cpu and not torch.cuda.is_available()):
     logging.info('No cuda, bye')
     sys.exit()
-r = sr.Recognizer()
 
-def performSTT(audio):
-     logging.info(audio[1])
-     audio_bytes = audio[1].tobytes()
-     audio_array = np.frombuffer(audio_bytes, dtype=np.int16)
-     with io.BytesIO() as wav_io:
-         with sf.SoundFile(wav_io, mode='w', format='wav', samplerate=audio[0], channels=1) as file:
-             file.write(audio_array)
-         wav_io.seek(0)
-         with sr.AudioFile(wav_io) as source:
-             audio_data = r.record(source)
-     return r.recognize_whisper(audio_data, model=args.model).strip()
 with gr.Blocks(analytics_enabled=False) as grBlock:
     gr.Markdown(
         """
@@ -44,7 +33,8 @@ with gr.Blocks(analytics_enabled=False) as grBlock:
         """)
     audio_object = gr.Audio(label="Speech")
     output_text = gr.Textbox(label="Text")
+    model = gr.Dropdown(label="model",choices=["small.en","medium.en"], value=args.model)
     btn = gr.Button("Convert Speech to text")
-    btn.click(fn=performSTT, inputs=[audio_object], outputs=[output_text])
+    btn.click(fn=mymod.performSTT, inputs=[audio_object,model], outputs=[output_text])
 grBlock.queue(max_size=10)
 grBlock.launch(server_name = '0.0.0.0', server_port = 7861)   
