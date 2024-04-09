@@ -8,7 +8,7 @@ import soundfile as sf
 import sys
 import torch
 
-def performSTT(audio,model):
+def perform_stt(audio,model):
     r = sr.Recognizer()
     logging.info(audio[1])
     audio_bytes = audio[1].tobytes()

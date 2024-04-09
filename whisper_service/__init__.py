@@ -35,6 +35,6 @@ with gr.Blocks(analytics_enabled=False) as grBlock:
     output_text = gr.Textbox(label="Text")
     model = gr.Dropdown(info="The bigger the model the more VRAM you need. It will generally be slower and more accurate though", label="Whisper Model",choices=["tiny","tiny.en","base","base.en","small","small.en","medium",  "medium.en", "large"], value=args.model)
     btn = gr.Button("Convert Speech to text")
-    btn.click(fn=mymod.performSTT, inputs=[audio_object,model], outputs=[output_text])
+    btn.click(fn=mymod.perform_stt, inputs=[audio_object,model], outputs=[output_text])
 grBlock.queue(max_size=10)
 grBlock.launch(server_name = '0.0.0.0', server_port = 7861)   
