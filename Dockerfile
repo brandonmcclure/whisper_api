@@ -17,7 +17,7 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 WORKDIR /app
 
 RUN apt-get update && \
-	apt-get install -y apt-transport-https ca-certificates ffmpeg --no-install-recommends \
+	apt-get install --no-install-recommends -y apt-transport-https ca-certificates ffmpeg  \
 	&& apt-get clean \
  	&& rm -rf /var/lib/apt/lists/*
 
