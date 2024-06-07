@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.0-base-ubuntu22.04 AS base
+FROM nvidia/cuda:12.5.0-base-ubuntu22.04 AS base
 
 ENV PYTHON_VERSION=3.10
 
