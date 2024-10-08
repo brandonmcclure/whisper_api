@@ -58,7 +58,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
       - name: Extract metadata (tags, labels) for Docker
         id: meta_github
-        uses: docker/metadata-action@60a0d343a0d8a18aedee9d34e62251f752153bdb
+        uses: docker/metadata-action@70b2cdc6480c1a8b86edf1777157f8f437de2166
         with:
           tags: |
             type=ref,event=pr
@@ -69,7 +69,7 @@ jobs:
             ghcr.io/brandonmcclure/whisper_service/${{ env.IMAGE_NAME }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta_dockerhub
-        uses: docker/metadata-action@60a0d343a0d8a18aedee9d34e62251f752153bdb
+        uses: docker/metadata-action@70b2cdc6480c1a8b86edf1777157f8f437de2166
         with:
           tags: |
             type=ref,event=pr
