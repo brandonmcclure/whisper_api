@@ -30,17 +30,17 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: https://forgejo.themongoose.xyz/actions/checkout@v4
       - run: git lfs pull
 
       - name: Log in to the forgejo Container registry
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        uses: https://forgejo.themongoose.xyz/actions/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
         with:
           registry: forgejo.themongoose.xyz/brandon
           username: ${{ secrets.FORGEJO_DOCKER_USER }}
           password: ${{ secrets.FORGEJO_DOCKER_TOKEN }}
       - name: Build Docker image (non main branch)
-        uses: docker/build-push-action@090ca155fc9b214cbcac536c450455a0e96f52c6
+        uses: https://forgejo.themongoose.xyz/actions/build-push-action@090ca155fc9b214cbcac536c450455a0e96f52c6
         if: github.ref != 'refs/heads/main'
         with:
           context: .
@@ -49,7 +49,7 @@ jobs:
           tags: |
             forgejo.themongoose.xyz/brandon/${{ env.IMAGE_NAME }}:ci
       - name: Build Docker image (main branch)
-        uses: docker/build-push-action@090ca155fc9b214cbcac536c450455a0e96f52c6
+        uses: https://forgejo.themongoose.xyz/actions/build-push-action@090ca155fc9b214cbcac536c450455a0e96f52c6
         if: github.ref == 'refs/heads/main'
         with:
           context: .
