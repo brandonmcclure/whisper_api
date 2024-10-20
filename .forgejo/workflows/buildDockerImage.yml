@@ -3,8 +3,6 @@ name: Docker build image
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
   push:
     branches:
       - main 
@@ -19,7 +17,7 @@ on:
       - '.forgejo/workflows/buildDockerImage.yml'
 
 env:
-  IMAGE_NAME: default_image
+  IMAGE_NAME: whisper_api
 
 jobs:
   build-and-push-image:
