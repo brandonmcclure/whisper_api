@@ -25,8 +25,7 @@ WORKDIR /code
 COPY ./requirements.txt .
 
 RUN pip install --upgrade pip --no-cache-dir && \
-	pip install -r requirements.txt --no-warn-script-location --no-cache-dir --compile && \
-    pip install torch torchvision torchaudio -f https://download.pytorch.org/whl/cu122/torch_stable.html
+	pip install -r requirements.txt --no-warn-script-location --no-cache-dir
 
 FROM base AS base_code
 WORKDIR /code
