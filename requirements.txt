@@ -1,6 +1,6 @@
 argparse==1.4.0
 speechrecognition==3.13.0
-gradio==5.9.1
+gradio==5.10.0
 numpy==1.26.4
 soundfile==0.13.0
 openai-whisper==20240930
